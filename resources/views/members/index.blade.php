@@ -3,6 +3,7 @@
 @section('title', 'Daftar Member')
 
 @section('content')
+
     <h2>Daftar Member Perpustakaan</h2>
 
     <table border="1" cellpadding="8" cellspacing="0">
@@ -31,4 +32,10 @@
             @endforeach
         </tbody>
     </table>
-@endsection
+
+    <form action="{{ route('members.destroy', $member) }}" method="POST"
+            onsubmit="return confirm('Yakin hapus?')">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Hapus</button>
+    </form>

@@ -7,7 +7,7 @@ use App\Http\Controllers\MemberController;
 use app\Http\Controllers\BorrowingController;
 
 // Tania //
-Route::get('/members', [MemberController::class, 'index']);
+Route::resource('members', MemberController::class);
 Route::get('/borrowings', [BorrowingController::class, 'index']);
 
 // tasya //
