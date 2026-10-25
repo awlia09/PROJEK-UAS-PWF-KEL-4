@@ -1,15 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Member')
-
 @section('content')
+<div class="container">
+    <h3>Detail Anggota</h3>
 
-    <form action="{{ route('members.store') }}" method="POST">
-        @csrf
-        <input type="text" name="member_code" value="{{ old('member_code') }}">
-        <input type="text" name="name" value="{{ old('name') }}">
-        <input type="email" name="email" value="{{ old('email') }}">
-        <input type="text" name="phone" value="{{ old('phone') }}">
-        <textarea name="address">{{ old('address') }}</textarea>
-        <button type="submit">Simpan</button>
-    </form>
+    <table class="table table-bordered w-50">
+        <tr><th>Kode Member</th><td>{{ $member->kode_member }}</td></tr>
+        <tr><th>Nama</th><td>{{ $member->nama }}</td></tr>
+        <tr><th>Email</th><td>{{ $member->email ?? '-' }}</td></tr>
+        <tr><th>Nomor HP</th><td>{{ $member->nomor_hp }}</td></tr>
+        <tr><th>Jenis Kelamin</th><td>{{ $member->jenis_kelamin }}</td></tr>
+        <tr><th>Tanggal Daftar</th><td>{{ $member->tanggal_daftar->format('d M Y') }}</td></tr>
+    </table>
+
+    <a href="{{ route('members.index') }}" class="btn btn-secondary">Kembali</a>
+</div>
+@endsection
