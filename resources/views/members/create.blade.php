@@ -1,15 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Member')
-
 @section('content')
+<div class="container">
+    <h3>Tambah Anggota</h3>
 
     <form action="{{ route('members.store') }}" method="POST">
         @csrf
-        <input type="text" name="member_code" value="{{ old('member_code') }}">
-        <input type="text" name="name" value="{{ old('name') }}">
-        <input type="email" name="email" value="{{ old('email') }}">
-        <input type="text" name="phone" value="{{ old('phone') }}">
-        <textarea name="address">{{ old('address') }}</textarea>
-        <button type="submit">Simpan</button>
+        @include('members._form')
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        <a href="{{ route('members.index') }}" class="btn btn-secondary">Batal</a>
     </form>
+</div>
+@endsection

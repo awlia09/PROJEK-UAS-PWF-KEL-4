@@ -2,39 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Member;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
-class MemberController extends Controller {
-    public function index() {
+class MemberController extends Controller
+{
+    // Menampilkan daftar anggota
+    public function index()
+    {
         $members = Member::all();
         return view('members.index', compact('members'));
     }
 
-    public function create() {
+    // Menampilkan form tambah
+    public function create()
+    {
         return view('members.create');
     }
 
-    public function store(Request $request) {
-        Member::create($request->all());
-        return redirect()->route('members.index');
+    // Menyimpan anggota baru
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'kode_member'    => ['required', 'unique:members,kode_member'],
+            'nama'           => ['required'],
+            'email'          => ['nullable', 'email'],
+            'nomor_hp'       => ['required', 'numeric'],
+            'jenis_kelamin'  => ['required', 'in:Laki-laki,Perempuan'],
+            'tanggal_daftar' => ['required', 'date'],
+        ]);
+
+        Member::create($data);
+
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-    public function show(Member $member) {
+    // Menampilkan detail satu anggota
+    public function show(Member $member)
+    {
         return view('members.show', compact('member'));
     }
 
-    public function edit(Member $member) {
+    // Menampilkan form edit
+    public function edit(Member $member)
+    {
         return view('members.edit', compact('member'));
     }
 
-    public function update(Request $request, Member $member) {
-        $member->update($request->all());
-        return redirect()->route('members.index');
+    // Menyimpan perubahan
+    public function update(Request $request, Member $member)
+    {
+        $data = $request->validate([
+            'kode_member'    => ['required', Rule::unique('members', 'kode_member')->ignore($member->id)],
+            'nama'           => ['required'],
+            'email'          => ['nullable', 'email'],
+            'nomor_hp'       => ['required', 'numeric'],
+            'jenis_kelamin'  => ['required', 'in:Laki-laki,Perempuan'],
+            'tanggal_daftar' => ['required', 'date'],
+        ]);
+
+        $member->update($data);
+
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil diperbarui.');
     }
 
-    public function destroy(Member $member) {
+    // Menghapus anggota
+    public function destroy(Member $member)
+    {
         $member->delete();
-        return redirect()->route('members.index');
+
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil dihapus.');
     }
 }
