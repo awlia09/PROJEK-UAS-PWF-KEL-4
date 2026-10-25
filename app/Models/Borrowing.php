@@ -14,4 +14,22 @@ class Borrowing extends Model
         'tanggal_pengembalian', 
         'status'
     ];
+
+    protected $casts = [
+        'tanggal_peminjaman'   => 'date',
+        'batas_pinjam'         => 'date',
+        'tanggal_pengembalian' => 'date',
+    ];
+
+    public function member() {
+        return $this->belongsTo(Member::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function details() {
+        return $this->hasMany(BorrowingDetail::class);
+    }
 }

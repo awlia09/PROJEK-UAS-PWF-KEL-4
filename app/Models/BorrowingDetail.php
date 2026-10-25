@@ -11,4 +11,12 @@ class BorrowingDetail extends Model
         'book_id', 
         'kuantitas'
     ];
+
+    public function book() {
+        return $this->belongsTo(Book::class);
+    }
+
+    public function borrowing() {
+        return $this->belongsTo(Borrowing::class);
+    }
 }
