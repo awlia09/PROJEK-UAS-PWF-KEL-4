@@ -8,7 +8,11 @@ use app\Http\Controllers\BorrowingController;
 
 // Tania //
 Route::resource('members', MemberController::class);
-Route::get('/borrowings', [BorrowingController::class, 'index']);
+Route::resource('borrowings', BorrowingController::class)
+    ->only(['index', 'create', 'store', 'show']);
+
+Route::patch('/borrowings/{borrowing}/return', [BorrowingController::class, 'returnBook'])
+    ->name('borrowings.return');
 
 // tasya //
 Route::get('/categories', [CategoryController::class, 'index']);
