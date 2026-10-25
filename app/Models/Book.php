@@ -8,3 +8,8 @@ class Book extends Model
 {
      protected $fillable = ['name', 'description'];
 }
+
+public function borrowingDetails()
+{
+    return $this->hasMany(BorrowingDetail::class);
+}

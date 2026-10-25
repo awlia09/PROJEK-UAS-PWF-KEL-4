@@ -14,7 +14,7 @@ return new class extends Migration
             $table->date('tanggal_peminjaman');
             $table->date('batas_peinjam');
             $table->date('tanggal_pengembalian')->nullable();
-            $table->enum('status', ['dipinjam', 'dikembalikan'])->default('dipinjam');
+            $table->enum('status', ['borrowed', 'returned'])->default('borrowed');
             $table->timestamps();
         });
     }

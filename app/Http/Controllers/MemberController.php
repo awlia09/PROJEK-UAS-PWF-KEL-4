@@ -39,8 +39,8 @@ class MemberController extends Controller
     }
 
     // Menampilkan detail satu anggota
-    public function show(Member $member)
-    {
+    public function show(Member $member) {
+        $member->load('borrowings.details.book');
         return view('members.show', compact('member'));
     }
 
@@ -68,8 +68,11 @@ class MemberController extends Controller
     }
 
     // Menghapus anggota
-    public function destroy(Member $member)
-    {
+    public function destroy(Member $member) {
+        if ($member->borrowings()->exists()) {
+            return back()->with('error', 'Anggota masih memiliki peminjaman, tidak dapat dihapus.');
+        }
+
         $member->delete();
 
         return redirect()->route('members.index')->with('success', 'Anggota berhasil dihapus.');
