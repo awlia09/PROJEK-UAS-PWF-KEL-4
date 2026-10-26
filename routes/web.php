@@ -15,5 +15,5 @@ Route::patch('/borrowings/{borrowing}/return', [BorrowingController::class, 'ret
     ->name('borrowings.return');
 
 // tasya //
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::resource('categories', CategoryController::class)->except(['show']);
 Route::resource('books', BookController::class);
