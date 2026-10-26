@@ -1,4 +1,11 @@
 <h2>Edit Kategori</h2>
+@if($errors->any())
+    <ul style="color:red">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
 <form action="{{ route('categories.update', $category) }}" method="POST">
     @csrf
     @method('PUT')

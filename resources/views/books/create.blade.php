@@ -1,4 +1,13 @@
 <h2>Tambah Buku</h2>
+
+@if($errors->any())
+    <ul style="color:red">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <form action="{{ route('books.store') }}" method="POST">
     @csrf
     <label>Judul</label><br>

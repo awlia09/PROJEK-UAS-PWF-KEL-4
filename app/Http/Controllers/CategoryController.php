@@ -20,14 +20,15 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        Category::create([
-            'name' => $request->name,
-            'description' => $request->description,
+        $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name',
+            'description' => 'nullable|string',
         ]);
 
-        return redirect()->route('categories.index');
-    }
+        Category::create($request->only('name', 'description'));
 
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambah.');
+    }   
     public function edit(Category $category)
     {
         return view('categories.edit', compact('category'));
@@ -35,18 +36,25 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $category->update([
-            'name' => $request->name,
-            'description' => $request->description,
+        $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name,' . $category->id,
+            'description' => 'nullable|string',
         ]);
 
-        return redirect()->route('categories.index');
+        $category->update($request->only('name', 'description'));
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diubah.');
     }
 
     public function destroy(Category $category)
     {
+        if ($category->books()->count() > 0) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Kategori tidak bisa dihapus karena masih memiliki buku.');
+        }
+
         $category->delete();
 
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
