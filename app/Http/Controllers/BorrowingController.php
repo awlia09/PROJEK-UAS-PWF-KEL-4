@@ -43,7 +43,7 @@ class BorrowingController extends Controller
             $tanggalPinjam = Carbon::parse($data['tanggal_peminjaman']);
 
             $borrowing = Borrowing::create([
-                'user_id'            => 1, // SEMENTARA, ganti ke Auth::id() setelah P14
+                'user_id'            => Auth::id(),
                 'member_id'          => $data['member_id'],
                 'tanggal_peminjaman' => $tanggalPinjam,
                 'batas_pinjam'       => $tanggalPinjam->copy()->addWeek(),
