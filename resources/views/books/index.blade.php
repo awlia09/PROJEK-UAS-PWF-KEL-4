@@ -8,9 +8,24 @@
 <h2>Daftar Buku</h2>
 <a href="{{ route('books.create') }}">Tambah Buku</a>
 
+<form action="{{ route('books.index') }}" method="GET" style="margin: 10px 0">
+    <label>Kategori:</label>
+    <select name="category_id">
+        <option value="">Semua kategori</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}"
+                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+    <button type="submit">Filter</button>
+    <a href="{{ route('books.index') }}">Reset</a>
+</form>
+
 <table border="1">
     <tr><th>No</th><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Tahun</th><th>Stok</th><th>Aksi</th></tr>
-    @foreach($books as $book)
+    @forelse($books as $book)
     <tr>
         <td>{{ $loop->iteration }}</td>
         <td>{{ $book->title }}</td>
@@ -28,5 +43,7 @@
             </form>
         </td>
     </tr>
-    @endforeach
+    @empty
+    <tr><td colspan="7">Tidak ada buku pada kategori ini.</td></tr>
+    @endforelse
 </table>
