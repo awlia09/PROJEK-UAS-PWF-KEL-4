@@ -32,4 +32,19 @@ class Borrowing extends Model
     public function details() {
         return $this->hasMany(BorrowingDetail::class);
     }
+
+    public function isTerlambat(): bool
+    {
+        return $this->status === 'borrowed'
+            && $this->batas_pinjam->lt(today());
+    }
+
+    public function hariTerlambat(): int
+    {
+        if (! $this->isTerlambat()) {
+            return 0;
+        }
+
+        return (int) $this->batas_pinjam->diffInDays(today());
+    }
 }
