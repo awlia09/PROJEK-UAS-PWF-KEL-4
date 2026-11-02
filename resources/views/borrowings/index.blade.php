@@ -26,7 +26,7 @@
     </tr>
 
     @forelse ($borrowings as $borrowing)
-        <tr>
+        <tr @if ($borrowing->isTerlambat()) style="background-color: #ffd6d6; color: #b00000;" @endif>
             <td>{{ $borrowing->member->nama }}</td>
             <td>{{ $borrowing->user->name }}</td>
             <td>{{ $borrowing->tanggal_peminjaman->format('d-m-Y') }}</td>
@@ -37,7 +37,12 @@
                     {{ $detail->book->title }}<br>
                 @endforeach
             </td>
-            <td>{{ $borrowing->status }}</td>
+            <td>
+                {{ $borrowing->status }}
+                @if ($borrowing->isTerlambat())
+                    <br><strong>TERLAMBAT {{ $borrowing->hariTerlambat() }} hari</strong>
+                @endif
+            </td>
             <td>
                 <a href="{{ route('borrowings.show', $borrowing) }}">Detail</a>
 
