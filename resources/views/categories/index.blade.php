@@ -6,15 +6,26 @@
 @endif
 
 <h2>Daftar Kategori</h2>
-<a href="{{ route('categories.create') }}">Tambah Kategori</a>
+
+@if(auth()->user()->role === 'admin')
+    <a href="{{ route('categories.create') }}">Tambah Kategori</a>
+@endif
 
 <table border="1">
-    <tr><th>No</th><th>Nama</th><th>Deskripsi</th><th>Aksi</th></tr>
+    <tr>
+        <th>No</th>
+        <th>Nama</th>
+        <th>Deskripsi</th>
+        @if(auth()->user()->role === 'admin')
+            <th>Aksi</th>
+        @endif
+    </tr>
     @foreach($categories as $category)
     <tr>
         <td>{{ $loop->iteration }}</td>
         <td>{{ $category->name }}</td>
         <td>{{ $category->description }}</td>
+        @if(auth()->user()->role === 'admin')
         <td>
             <a href="{{ route('categories.edit', $category) }}">Edit</a>
             <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline">
@@ -23,6 +34,7 @@
                 <button type="submit" onclick="return confirm('Hapus kategori ini?')">Hapus</button>
             </form>
         </td>
+        @endif
     </tr>
     @endforeach
 </table>
