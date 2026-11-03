@@ -1,17 +1,13 @@
-@if(session('success'))
-    <p style="color:green">{{ session('success') }}</p>
-@endif
-@if(session('error'))
-    <p style="color:red">{{ session('error') }}</p>
-@endif
+@extends('layouts.app')
 
+@section('content')
 <h2>Daftar Kategori</h2>
 
 @if(auth()->user()->role === 'admin')
-    <a href="{{ route('categories.create') }}">Tambah Kategori</a>
+    <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Kategori</a>
 @endif
 
-<table border="1">
+<table class="table table-bordered bg-white">
     <tr>
         <th>No</th>
         <th>Nama</th>
@@ -31,10 +27,11 @@
             <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" onclick="return confirm('Hapus kategori ini?')">Hapus</button>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus kategori ini?')">Hapus</button>
             </form>
         </td>
         @endif
     </tr>
     @endforeach
 </table>
+@endsection
