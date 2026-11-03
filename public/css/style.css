@@ -1,0 +1,383 @@
+:root {
+    --pastel-blue: #7cb9e8;
+    --pastel-blue-hover: #5c9ecc;
+    --pastel-purple: #b39ddb;
+    --pastel-purple-hover: #9575cd;
+    --pastel-pink: #ffab91;
+    --pastel-pink-hover: #ff8a65;
+    --pastel-red: #ef9a9a;
+    --pastel-red-hover: #e57373;
+    
+    --bg-body: #f4f7fc;
+    --bg-card: #ffffff;
+    --text-dark: #2c3e50;
+    --border-color: #e2e8f0;
+    --radius-main: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.2s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+input, select, textarea, button, .btn, .table, .navbar {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.container {
+    max-width: 1140px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: var(--pastel-blue);
+    padding: 1.1rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-container {
+    max-width: 1250px; /* Diperlebar agar ruang menu lebih lega */
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: 2rem; /* Jarak antara Judul dan Menu Utama */
+    transition: var(--transition);
+}
+
+.navbar-brand:hover {
+    opacity: 0.9;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 1.25rem; 
+    list-style: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 1.05rem; 
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* CARD & TABLES */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-main);
+    padding: 1.8rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    margin-bottom: 2rem;
+}
+
+.card-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.table th {
+    background-color: var(--pastel-blue);
+    color: white;
+    padding: 0.85rem 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* BUTTONS & ACTIONS */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+}
+
+.btn-tambah, .btn-simpan, .btn-primary {
+    background-color: var(--pastel-purple);
+    color: white !important;
+}
+
+.btn-tambah:hover, .btn-simpan:hover, .btn-primary:hover {
+    background-color: var(--pastel-purple-hover);
+}
+
+.btn-edit, .btn-info {
+    background-color: var(--pastel-blue);
+    color: white !important;
+}
+
+.btn-edit:hover, .btn-info:hover {
+    background-color: var(--pastel-blue-hover);
+}
+
+.btn-hapus, .btn-danger {
+    background-color: var(--pastel-red);
+    color: white !important;
+}
+
+.btn-hapus:hover, .btn-danger:hover {
+    background-color: var(--pastel-red-hover);
+}
+
+.btn-batal, .btn-secondary {
+    background-color: #e2e8f0;
+    color: var(--text-dark) !important;
+}
+
+.btn-batal:hover, .btn-secondary:hover {
+    background-color: #cbd5e1;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+/* FORM ELEMENTS */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition);
+    background-color: #ffffff;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--pastel-purple);
+    box-shadow: 0 0 0 3px rgba(179, 157, 219, 0.25);
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 0.8rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: #ffffff;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.93rem;
+    cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--pastel-purple);
+    cursor: pointer;
+}
+
+/* ALERTS & BADGES */
+.badge-stok {
+    background-color: var(--pastel-pink);
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.alert {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+}
+
+.login-wrapper {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: var(--radius-main);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 10px 25px rgba(124, 185, 232, 0.2);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.login-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+.login-card .form-group {
+    text-align: left;
+}
+
+.login-card .btn-simpan {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   STATISTIC CARDS & DASHBOARD GRID
+   ========================================================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    border-radius: var(--radius-sm);
+    padding: 1.25rem 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stat-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Warna Kartu Statistik Pastel */
+.bg-pastel-blue { background-color: var(--pastel-blue); }
+.bg-pastel-purple { background-color: var(--pastel-purple); }
+.bg-pastel-pink { background-color: var(--pastel-pink); }
+.bg-pastel-yellow { background-color: #ffe082; color: #5d4037; } /* Kuning Soft */
+.bg-pastel-red { background-color: var(--pastel-red); }
+
+/* Grid Dashboard 2 Kolom (Tabel Stok Menipis & Peminjaman Terbaru) */
+.dashboard-tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .dashboard-tables-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.alert-success { background-color: #d1fae5; color: #065f46; }
+.alert-danger { background-color: #fee2e2; color: #991b1b; }

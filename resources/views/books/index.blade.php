@@ -1,46 +1,65 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Daftar Buku</h2>
-<a href="{{ route('books.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Buku</a>
+    <div class="card">
+        <div class="card-header-custom">
+            <h2 class="page-title" style="margin: 0;">Daftar Buku</h2>
+            <a href="{{ route('books.create') }}" class="btn btn-tambah">+ Tambah Buku</a>
+        </div>
 
-<form action="{{ route('books.index') }}" method="GET" class="mb-3">
-    <label>Kategori:</label>
-    <select name="category_id">
-        <option value="">Semua kategori</option>
-        @foreach($categories as $category)
-            <option value="{{ $category->id }}"
-                {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
-            </option>
-        @endforeach
-    </select>
-    <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
-    <a href="{{ route('books.index') }}">Reset</a>
-</form>
+        <form method="GET" action="{{ route('books.index') }}" style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.5rem;">
+            <label class="form-label" style="margin: 0;">Kategori:</label>
+            <select name="category_id" class="form-select" style="width: auto;">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->nama ?? $cat->name }}
+                    </option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-simpan btn-sm">Filter</button>
+            <a href="{{ route('books.index') }}" class="btn btn-batal btn-sm">Reset</a>
+        </form>
 
-<table class="table table-bordered bg-white">
-    <tr><th>No</th><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Tahun</th><th>Stok</th><th>Aksi</th></tr>
-    @forelse($books as $book)
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $book->title }}</td>
-        <td>{{ $book->author }}</td>
-        <td>{{ $book->category->name }}</td>
-        <td>{{ $book->year }}</td>
-        <td>{{ $book->stock }}</td>
-        <td>
-            <a href="{{ route('books.show', $book) }}">Detail</a>
-            <a href="{{ route('books.edit', $book) }}">Edit</a>
-            <form action="{{ route('books.destroy', $book) }}" method="POST" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus buku ini?')">Hapus</button>
-            </form>
-        </td>
-    </tr>
-    @empty
-    <tr><td colspan="7">Tidak ada buku pada kategori ini.</td></tr>
-    @endforelse
-</table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Kategori</th>
+                        <th>Tahun</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($books as $index => $b)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $b->judul ?? $b->title }}</td>
+                            <td>{{ $b->penulis ?? $b->author }}</td>
+                            <td>{{ $b->category->nama ?? $b->category->name ?? '-' }}</td>
+                            <td>{{ $b->tahun ?? $b->year }}</td>
+                            <td>{{ $b->stok ?? $b->stock }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ route('books.show', $b->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                    <a href="{{ route('books.edit', $b->id) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    <form action="{{ route('books.destroy', $b->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus buku ini?')">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="7" style="text-align: center;">Belum ada data buku.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection

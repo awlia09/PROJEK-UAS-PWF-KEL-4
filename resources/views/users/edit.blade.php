@@ -1,34 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Edit User</h2>
-<div class="card shadow-sm col-md-6">
-    <div class="card-body">
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="page-title" style="margin-bottom: 1.5rem;">Edit User</h2>
+
         <form action="{{ route('users.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="mb-3">
+
+            <div class="form-group">
                 <label class="form-label">Nama</label>
-                <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+                <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
             </div>
-            <div class="mb-3">
+
+            <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+                <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password (Kosongkan jika tidak diubah)</label>
-                <input type="password" name="password" class="form-control">
+
+            <div class="form-group">
+                <label class="form-label">Password Baru (Opsional)</label>
+                <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak diubah">
             </div>
-            <div class="mb-3">
+
+            <div class="form-group">
                 <label class="form-label">Role</label>
                 <select name="role" class="form-select" required>
                     <option value="petugas" {{ $user->role == 'petugas' ? 'selected' : '' }}>Petugas</option>
                     <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-            <a href="{{ route('users.index') }}" class="btn btn-secondary">Batal</a>
+
+            <div class="btn-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-simpan">Update User</button>
+                <a href="{{ route('users.index') }}" class="btn btn-batal">Batal</a>
+            </div>
         </form>
     </div>
-</div>
 @endsection

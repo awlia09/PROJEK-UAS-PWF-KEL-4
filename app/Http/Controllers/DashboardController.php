@@ -3,37 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\Borrowing;
 use App\Models\Member;
+use App\Models\Borrowing;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Kartu wajib
-        $totalTitles   = Book::count();
-        $totalStock    = Book::sum('stock');
-        $totalMembers  = Member::count();
-        $borrowedCount = Borrowing::where('status', 'borrowed')->count();
+        // 1. Hitung total jenis/judul buku
+        $totalJudulBuku = Book::count();
 
-        // Dashboard tambahan
-        $totalTerlambat = Borrowing::where('status', 'borrowed')
-            ->whereDate('batas_pinjam', '<', today())
-            ->count();
+        // 2. Hitung total akumulasi seluruh stok buku (cek kolom 'stok' / 'stock')
+        $totalStokBuku = Book::sum('stok') ?: Book::sum('stock');
 
-        $bukuStokMenipis = Book::where('stock', '<', 3)
-            ->orderBy('stock')
-            ->take(5)
-            ->get();
+        // 3. Hitung total anggota
+        $totalAnggota = Member::count();
 
-        $peminjamanTerbaru = Borrowing::with(['member', 'details.book'])
-            ->latest()
-            ->take(5)
+        // 4. Hitung peminjaman yang sedang aktif / terlambat
+        $totalSedangDipinjam = Borrowing::whereIn('status', ['dipinjam', 'borrowed'])->count();
+        $totalTerlambat = Borrowing::where('status', 'terlambat')->count();
+
+        // 5. Ambil daftar buku yang stoknya kurang dari atau sama dengan 3
+        $bukuStokMenipis = Book::where('stok', '<=', 3)
+            ->orWhere('stock', '<=', 3)
             ->get();
 
         return view('dashboard', compact(
-            'totalTitles', 'totalStock', 'totalMembers', 'borrowedCount',
-            'totalTerlambat', 'bukuStokMenipis', 'peminjamanTerbaru'
+            'totalJudulBuku',
+            'totalStokBuku',
+            'totalAnggota',
+            'totalSedangDipinjam',
+            'totalTerlambat',
+            'bukuStokMenipis'
         ));
     }
 }
