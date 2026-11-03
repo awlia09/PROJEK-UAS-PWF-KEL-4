@@ -37,7 +37,7 @@
                     <td>{{ $member->email ?? '-' }}</td>
                     <td>{{ $member->nomor_hp }}</td>
                     <td>{{ $member->jenis_kelamin }}</td>
-                    <td>{{ $member->tanggal_daftar->format('d M Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($member->tanggal_daftar)->format('d M Y') }}</td>
                     <td class="d-flex gap-1">
                         <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-info">Detail</a>
                         <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning">Edit</a>
