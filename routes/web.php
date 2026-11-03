@@ -31,6 +31,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/borrowings/{borrowing}/return', [BorrowingController::class, 'returnBook'])->name('borrowings.return');
 
     // Route milik Tasya
-    Route::resource('categories', CategoryController::class)->except(['show']);
-    Route::resource('books', BookController::class);
+    // Admin dan petugas: lihat kategori, kelola buku
+    Route::middleware('role:admin,petugas')->group(function () {
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::resource('books', BookController::class);
+    });
+
+    // Hanya admin: tambah, ubah, hapus kategori
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('categories', CategoryController::class)->except(['index', 'show']);
+    });
 });

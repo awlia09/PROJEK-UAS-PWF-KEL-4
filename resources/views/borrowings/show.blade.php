@@ -8,7 +8,12 @@
 <p>Tanggal Pinjam: {{ $borrowing->tanggal_peminjaman->format('d-m-Y') }}</p>
 <p>Jatuh Tempo: {{ $borrowing->batas_pinjam->format('d-m-Y') }}</p>
 <p>Tanggal Kembali: {{ $borrowing->tanggal_pengembalian ? $borrowing->tanggal_pengembalian->format('d-m-Y') : '-' }}</p>
-<p>Status: {{ $borrowing->status }}</p>
+<p>
+    Status: {{ $borrowing->status }}
+    @if ($borrowing->isTerlambat())
+        <strong style="color: red">(TERLAMBAT {{ $borrowing->hariTerlambat() }} hari)</strong>
+    @endif
+</p>
 
 <p>Buku yang dipinjam:</p>
 <ul>

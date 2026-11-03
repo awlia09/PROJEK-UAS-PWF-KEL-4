@@ -8,10 +8,17 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('category')->get();
-        return view('books.index', compact('books'));
+        $categories = Category::all();
+
+        $books = Book::with('category')
+            ->when($request->category_id, function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->get();
+
+        return view('books.index', compact('books', 'categories'));
     }
 
     public function create()

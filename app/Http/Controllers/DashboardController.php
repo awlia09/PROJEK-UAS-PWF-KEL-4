@@ -3,18 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\Member;
 use App\Models\Borrowing;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard', [
-            'totalTitles' => class_exists(Book::class) ? Book::count() : 0,
-            'totalStock' => class_exists(Book::class) ? Book::sum('stock') : 0,
-            'totalMembers' => class_exists(Member::class) ? Member::count() : 0,
-            'borrowedCount' => class_exists(Borrowing::class) ? Borrowing::where('status', 'borrowed')->count() : 0,
-        ]);
+        // 1. Total peminjaman yang terlambat (lewat jatuh tempo & belum dikembalikan)
+        $totalTerlambat = Borrowing::whereNull('returned_at')
+            ->where('due_date', '<', Carbon::now())
+            ->count();
+
+        // 2. Buku dengan stok menipis (misal stok <= 3)
+        $bukuStokMenipis = Book::where('stock', '<=', 3)->get();
+
+        // 3. 5 transaksi peminjaman terbaru
+        $peminjamanTerbaru = Borrowing::with(['member', 'book'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('dashboard', compact('totalTerlambat', 'bukuStokMenipis', 'peminjamanTerbaru'));
     }
 }
