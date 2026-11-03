@@ -29,7 +29,7 @@ class MemberController extends Controller
             'nama'           => ['required'],
             'email'          => ['nullable', 'email'],
             'nomor_hp'       => ['required', 'numeric'],
-            'jenis_kelamin'  => ['required', 'in:Laki-laki,Perempuan'],
+            'jenis_kelamin'  => ['required', 'in:L, P'],
             'tanggal_daftar' => ['required', 'date'],
         ]);
 
@@ -58,7 +58,7 @@ class MemberController extends Controller
             'nama'           => ['required'],
             'email'          => ['nullable', 'email'],
             'nomor_hp'       => ['required', 'numeric'],
-            'jenis_kelamin'  => ['required', 'in:Laki-laki,Perempuan'],
+            'jenis_kelamin'  => ['required', 'in:L,P'],
             'tanggal_daftar' => ['required', 'date'],
         ]);
 
