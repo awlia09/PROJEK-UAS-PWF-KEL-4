@@ -14,6 +14,13 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+
+                    {{-- Menu tambahan: Katalog, Anggota, Peminjaman --}}
+                    <li class="nav-item"><a class="nav-link" href="{{ route('books.index') }}">Buku</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('categories.index') }}">Kategori</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('members.index') }}">Anggota</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('borrowings.index') }}">Peminjaman</a></li>
+
                     @if(Auth::user()->role === 'admin')
                         <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">User</a></li>
                     @endif
