@@ -12,7 +12,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('member_id')->constrained();
             $table->date('tanggal_peminjaman');
-            $table->date('batas_peinjam');
+            $table->date('batas_pinjam');
             $table->date('tanggal_pengembalian')->nullable();
             $table->enum('status', ['borrowed', 'returned'])->default('borrowed');
             $table->timestamps();
