@@ -2,19 +2,24 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        foreach (['Fiksi', 'Non-Fiksi', 'Komik', 'Agama', 'Dongeng', 'Biografi'] as $name) {
-            Category::create(['name' => $name]);
+        $categories = [
+            ['name' => 'Fiksi',     'description' => 'Novel dan cerita rekaan'],
+            ['name' => 'Non-Fiksi', 'description' => 'Buku berbasis fakta dan pengetahuan umum'],
+            ['name' => 'Komik',     'description' => 'Buku cerita bergambar'],
+            ['name' => 'Agama',     'description' => 'Buku keagamaan dan kerohanian'],
+            ['name' => 'Dongeng',   'description' => 'Cerita rakyat dan dongeng anak'],
+            ['name' => 'Biografi',  'description' => 'Kisah hidup tokoh'],
+        ];
+
+        foreach ($categories as $category) {
+            Category::create($category);
         }
     }
 }
