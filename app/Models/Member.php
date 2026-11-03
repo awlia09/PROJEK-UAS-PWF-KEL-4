@@ -14,6 +14,10 @@ class Member extends Model {
         'tanggal_daftar'
     ];
 
+    protected $casts = [
+    'tanggal_daftar' => 'date',
+    ];
+
     public function borrowings()
     {
         return $this->hasMany(Borrowing::class);
