@@ -1,74 +1,102 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Selamat Datang, {{ auth()->user()->name }}!</h1>
-<p>Anda login sebagai {{ ucfirst(auth()->user()->role) }}</p>
-
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3"><div class="card-body">
-            <h5>Total Judul Buku</h5><h2>{{ $totalTitles }}</h2>
-        </div></div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-success mb-3"><div class="card-body">
-            <h5>Total Stok Buku</h5><h2>{{ $totalStock }}</h2>
-        </div></div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info mb-3"><div class="card-body">
-            <h5>Total Anggota</h5><h2>{{ $totalMembers }}</h2>
-        </div></div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-dark bg-warning mb-3"><div class="card-body">
-            <h5>Sedang Dipinjam</h5><h2>{{ $borrowedCount }}</h2>
-        </div></div>
-    </div>
-</div>
-
-<div class="card text-white bg-danger mb-4" style="max-width: 18rem;">
-    <div class="card-body">
-        <h5>Terlambat</h5><h2>{{ $totalTerlambat }}</h2>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <h5>Stok Menipis (kurang dari 3)</h5>
-        <table class="table table-sm table-bordered bg-white">
-            <tr><th>Judul</th><th>Stok</th></tr>
-            @forelse($bukuStokMenipis as $buku)
-                <tr><td>{{ $buku->title }}</td><td>{{ $buku->stock }}</td></tr>
-            @empty
-                <tr><td colspan="2">Semua stok masih mencukupi.</td></tr>
-            @endforelse
-        </table>
+    <div style="margin-bottom: 2rem;">
+        <h2 class="page-title" style="font-size: 1.8rem; margin-bottom: 0.2rem;">
+            Selamat Datang, {{ auth()->user()?->name ?? 'Admin Utama' }}!
+        </h2>
+        <p style="color: var(--text-muted); font-size: 1rem;">
+            Anda login sebagai {{ ucfirst(auth()->user()?->role ?? 'Admin') }}
+        </p>
     </div>
 
-    <div class="col-md-6">
-        <h5>Peminjaman Terbaru</h5>
-        <table class="table table-sm table-bordered bg-white">
-            <tr><th>Anggota</th><th>Buku</th><th>Jatuh Tempo</th><th>Status</th></tr>
-            @forelse($peminjamanTerbaru as $b)
-                <tr>
-                    <td>{{ $b->member->nama ?? '-' }}</td>
-                    <td>{{ $b->details->map(fn($d) => $d->book->title ?? '-')->implode(', ') }}</td>
-                    <td>{{ $b->batas_pinjam->format('d-m-Y') }}</td>
-                    <td>
-                        @if($b->status === 'returned')
-                            Dikembalikan
-                        @elseif($b->batas_pinjam->lt(today()))
-                            <span class="text-danger fw-bold">Terlambat</span>
-                        @else
-                            Dipinjam
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="4">Belum ada peminjaman.</td></tr>
-            @endforelse
-        </table>
+    <!-- 5 Kartu Statistik Dinamis Palette Pastel -->
+    <div class="stats-grid">
+        <div class="stat-card bg-pastel-blue">
+            <div class="stat-title">Total Judul Buku</div>
+            <div class="stat-value">{{ $totalJudulBuku ?? $totalBuku ?? 0 }}</div>
+        </div>
+
+        <div class="stat-card bg-pastel-purple">
+            <div class="stat-title">Total Stok Buku</div>
+            <div class="stat-value">{{ $totalStokBuku ?? $totalStok ?? 0 }}</div>
+        </div>
+
+        <div class="stat-card bg-pastel-pink">
+            <div class="stat-title">Total Anggota</div>
+            <div class="stat-value">{{ $totalAnggota ?? 0 }}</div>
+        </div>
+
+        <div class="stat-card bg-pastel-yellow">
+            <div class="stat-title">Sedang Dipinjam</div>
+            <div class="stat-value">{{ $totalSedangDipinjam ?? 0 }}</div>
+        </div>
+
+        <div class="stat-card bg-pastel-red">
+            <div class="stat-title">Terlambat</div>
+            <div class="stat-value">{{ $totalTerlambat ?? 0 }}</div>
+        </div>
     </div>
-</div>
+
+    <!-- Layout 2 Tabel Berdampingan -->
+    <div class="dashboard-tables-grid">
+        <!-- Kolom Kiri: Stok Menipis -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-dark);">
+                Stok Menipis (kurang dari 3)
+            </h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Judul</th>
+                            <th style="width: 100px; text-align: center;">Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($bukuStokMenipis ?? [] as $buku)
+                            <tr>
+                                <td>{{ $buku->judul ?? $buku->title ?? '-' }}</td>
+                                <td style="text-align: center;">
+                                    <span class="badge-stok">{{ $buku->stok ?? $buku->stock ?? 0 }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-muted); padding: 1.5rem 0;">
+                                    Tidak ada stok buku yang menipis.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Peminjaman Terbaru (Dikosongkan) -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-dark);">
+                Peminjaman Terbaru
+            </h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Anggota</th>
+                            <th>Buku</th>
+                            <th>Jatuh Tempo</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
+                                Belum ada transaksi peminjaman terbaru.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 @endsection

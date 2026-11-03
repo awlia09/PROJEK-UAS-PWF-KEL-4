@@ -1,60 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Data Anggota</h3>
-        <a href="{{ route('members.create') }}" class="btn btn-primary">+ Tambah Anggota</a>
+    <div class="card">
+        <div class="card-header-custom">
+            <h2 class="page-title" style="margin: 0;">Daftar Anggota</h2>
+            <a href="{{ route('members.create') }}" class="btn btn-tambah">+ Tambah Anggota</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode Anggota</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>No HP</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($members as $index => $m)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>
+                                <strong>
+                                    {{ $m->kode_member ?? $m->kode_anggota ?? '-' }}
+                                </strong>
+                            </td>
+                            <td>{{ $m->nama }}</td>
+                            <td>{{ $m->email }}</td>
+                            <td>
+                                {{ $m->nomor_hp ?? $m->no_hp ?? '-' }}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ route('members.show', $m->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                    <a href="{{ route('members.edit', $m->id) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    <form action="{{ route('members.destroy', $m->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus anggota ini?')">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="6" style="text-align: center;">Belum ada data anggota.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Kode</th>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>No. HP</th>
-                <th>Jenis Kelamin</th>
-                <th>Tgl Daftar</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($members as $member)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $member->kode_member }}</td>
-                    <td>{{ $member->nama }}</td>
-                    <td>{{ $member->email ?? '-' }}</td>
-                    <td>{{ $member->nomor_hp }}</td>
-                    <td>{{ $member->jenis_kelamin }}</td>
-                    <td>{{ \Carbon\Carbon::parse($member->tanggal_daftar)->format('d M Y') }}</td>
-                    <td class="d-flex gap-1">
-                        <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-info">Detail</a>
-                        <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('members.destroy', $member) }}" method="POST"
-                              onsubmit="return confirm('Yakin hapus anggota ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" class="text-center">Belum ada anggota.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
 @endsection

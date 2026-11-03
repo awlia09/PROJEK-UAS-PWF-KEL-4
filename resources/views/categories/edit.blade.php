@@ -1,24 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Edit Kategori</h2>
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="page-title" style="margin-bottom: 1.5rem;">Edit Kategori</h2>
 
-@if($errors->any())
-    <ul class="text-danger">
-        @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
+        <form action="{{ route('categories.update', $category->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-<form action="{{ route('categories.update', $category) }}" method="POST">
-    @csrf
-    @method('PUT')
-    <label>Nama</label><br>
-    <input type="text" name="name" value="{{ old('name', $category->name) }}"><br>
-    <label>Deskripsi</label><br>
-    <textarea name="description">{{ old('description', $category->description) }}</textarea><br>
-    <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
-    <a href="{{ route('categories.index') }}">Kembali</a>
-</form>
+            <div class="form-group">
+                <label class="form-label">Nama Kategori</label>
+                <input type="text" name="nama" class="form-control" value="{{ old('nama', $category->nama ?? $category->name) }}" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Deskripsi</label>
+                <textarea name="deskripsi" class="form-control" rows="3">{{ old('deskripsi', $category->deskripsi ?? $category->description) }}</textarea>
+            </div>
+
+            <div class="btn-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-simpan">Update Kategori</button>
+                <a href="{{ route('categories.index') }}" class="btn btn-batal">Batal</a>
+            </div>
+        </form>
+    </div>
 @endsection
