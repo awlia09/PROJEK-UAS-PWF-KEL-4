@@ -4,7 +4,11 @@
     <div class="card">
         <div class="card-header-custom">
             <h2 class="page-title" style="margin: 0;">Daftar Buku</h2>
-            <a href="{{ route('books.create') }}" class="btn btn-tambah">+ Tambah Buku</a>
+            
+            {{-- Tombol Tambah Buku hanya tampil jika diizinkan Policy 'create' --}}
+            @can('create', App\Models\Book::class)
+                <a href="{{ route('books.create') }}" class="btn btn-tambah">+ Tambah Buku</a>
+            @endcan
         </div>
 
         <form method="GET" action="{{ route('books.index') }}" style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.5rem;">
@@ -45,13 +49,24 @@
                             <td>{{ $b->stok ?? $b->stock }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('books.show', $b->id) }}" class="btn btn-info btn-sm">Detail</a>
-                                    <a href="{{ route('books.edit', $b->id) }}" class="btn btn-edit btn-sm">Edit</a>
-                                    <form action="{{ route('books.destroy', $b->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus buku ini?')">Hapus</button>
-                                    </form>
+                                    {{-- Tombol Detail dapat dilihat oleh user yang memiliki izin 'view' --}}
+                                    @can('view', $b)
+                                        <a href="{{ route('books.show', $b->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                    @endcan
+
+                                    {{-- Tombol Edit dibungkus @can('update', $b) --}}
+                                    @can('update', $b)
+                                        <a href="{{ route('books.edit', $b->id) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    @endcan
+
+                                    {{-- Tombol Hapus dibungkus @can('delete', $b) --}}
+                                    @can('delete', $b)
+                                        <form action="{{ route('books.destroy', $b->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus buku ini?')">Hapus</button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
