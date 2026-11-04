@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BookController extends Controller
 {
@@ -88,5 +89,16 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus.');
+    }
+
+    public function destroy(Book $book)
+    {
+        Gate::authorize('delete', $book);
+
+        $book->delete();
+
+        return redirect()
+            ->route('books.index')
+            ->with('success', 'Buku berhasil dihapus.');
     }
 }

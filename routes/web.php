@@ -9,6 +9,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 
+// Group Route yang hanya bisa diakses jika lolos Gate 'manage-users'
+Route::middleware(['auth', 'can:manage-users'])->group(function () {
+    Route::resource('users', UserController::class);
+});
+
 Route::get('/', function () {
     return redirect()->route('login');
 });

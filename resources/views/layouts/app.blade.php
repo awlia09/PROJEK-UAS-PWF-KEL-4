@@ -21,12 +21,14 @@
                 <li><a class="nav-link" href="{{ route('categories.index') }}">Kategori</a></li>
                 <li><a class="nav-link" href="{{ route('members.index') }}">Anggota</a></li>
                 <li><a class="nav-link" href="{{ route('borrowings.index') }}">Peminjaman</a></li>
-                @if(Auth::check() && Auth::user()?->role === 'admin')
+                
+                <!-- Menggunakan Gate @can('manage-users') Sesuai Materi Pembelajaran -->
+                @can('manage-users')
                     <li><a class="nav-link" href="{{ route('users.index') }}">User</a></li>
-                @endif
+                @endcan
             </ul>
 
-            <!-- Profil User & Logout (Aman dari Error Null) -->
+            <!-- Profil User & Logout -->
             <div style="display: flex; align-items: center; gap: 1.2rem; margin-left: 1.5rem;">
                 <span style="color: white; font-weight: 600; font-size: 1.05rem; white-space: nowrap;">
                     {{ Auth::user()?->name ?? 'Pengguna' }} ({{ ucfirst(Auth::user()?->role ?? 'User') }})
