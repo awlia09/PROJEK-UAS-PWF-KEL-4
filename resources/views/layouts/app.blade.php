@@ -16,7 +16,7 @@
     @auth
     <nav class="navbar">
         <div class="navbar-container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">Perpustakaan</a>
+            <a class="navbar-brand" href="{{ route('dashboard') }}">Perpustakaan Sistem Informasi</a>
 
             <ul class="nav-menu">
                 <li><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a></li>
