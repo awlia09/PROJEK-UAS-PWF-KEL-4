@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Sistem Informasi</title>
+    <title>@yield('title', 'Sistem Informasi Perpustakaan')</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
@@ -11,38 +16,31 @@
     @auth
     <nav class="navbar">
         <div class="navbar-container">
-            <!-- Brand / Judul Projek -->
-            <a class="navbar-brand" href="{{ route('dashboard') }}">Perpustakaan Sistem Informasi</a>
-            
-            <!-- Menu Navigasi Utama -->
+            <a class="navbar-brand" href="{{ route('dashboard') }}">Perpustakaan</a>
+
             <ul class="nav-menu">
-                <li><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li><a class="nav-link" href="{{ route('books.index') }}">Buku</a></li>
-                <li><a class="nav-link" href="{{ route('categories.index') }}">Kategori</a></li>
-                <li><a class="nav-link" href="{{ route('members.index') }}">Anggota</a></li>
-                <li><a class="nav-link" href="{{ route('borrowings.index') }}">Peminjaman</a></li>
-                
-                <!-- Menggunakan Gate @can('manage-users') Sesuai Materi Pembelajaran -->
+                <li><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li><a class="nav-link {{ request()->routeIs('books.*') ? 'active' : '' }}" href="{{ route('books.index') }}">Buku</a></li>
+                <li><a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">Kategori</a></li>
+                <li><a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.index') }}">Anggota</a></li>
+                <li><a class="nav-link {{ request()->routeIs('borrowings.*') ? 'active' : '' }}" href="{{ route('borrowings.index') }}">Peminjaman</a></li>
                 @can('manage-users')
-                    <li><a class="nav-link" href="{{ route('users.index') }}">User</a></li>
+                    <li><a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">User</a></li>
                 @endcan
             </ul>
 
-            <!-- Profil User & Logout -->
-            <div style="display: flex; align-items: center; gap: 1.2rem; margin-left: 1.5rem;">
-                <span style="color: white; font-weight: 600; font-size: 1.05rem; white-space: nowrap;">
-                    {{ Auth::user()?->name ?? 'Pengguna' }} ({{ ucfirst(Auth::user()?->role ?? 'User') }})
-                </span>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline; margin: 0;">
+            <div class="nav-user">
+                <span class="nav-user-name">{{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
+                <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-batal btn-sm" style="padding: 0.4rem 0.9rem; font-size: 0.95rem;">Logout</button>
+                    <button type="submit" class="btn btn-batal btn-sm">Logout</button>
                 </form>
             </div>
         </div>
     </nav>
     @endauth
 
-    <div class="container">
+    <main class="container">
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -52,7 +50,7 @@
         @endif
 
         @yield('content')
-    </div>
+    </main>
 
 </body>
 </html>

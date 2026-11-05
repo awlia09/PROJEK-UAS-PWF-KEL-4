@@ -1,83 +1,67 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard - Perpustakaan')
+
 @section('content')
-    <div style="margin-bottom: 2rem;">
-        <h2 class="page-title" style="font-size: 1.8rem; margin-bottom: 0.2rem;">
-            Selamat Datang, {{ auth()->user()?->name ?? 'Admin Utama' }}!
-        </h2>
-        <p style="color: var(--text-muted); font-size: 1rem;">
-            Anda login sebagai {{ ucfirst(auth()->user()?->role ?? 'Admin') }}
-        </p>
+    <div class="page-intro">
+        <h2 class="page-title-lg">Selamat Datang, {{ auth()->user()->name }}!</h2>
+        <p class="page-subtitle">Anda login sebagai {{ ucfirst(auth()->user()->role) }}</p>
     </div>
 
-    <!-- 5 Kartu Statistik Dinamis Palette Pastel -->
     <div class="stats-grid">
         <div class="stat-card bg-pastel-blue">
             <div class="stat-title">Total Judul Buku</div>
-            <div class="stat-value">{{ $totalJudulBuku ?? $totalBuku ?? 0 }}</div>
+            <div class="stat-value">{{ $totalJudulBuku }}</div>
         </div>
 
         <div class="stat-card bg-pastel-purple">
             <div class="stat-title">Total Stok Buku</div>
-            <div class="stat-value">{{ $totalStokBuku ?? $totalStok ?? 0 }}</div>
+            <div class="stat-value">{{ $totalStokBuku }}</div>
         </div>
 
         <div class="stat-card bg-pastel-pink">
             <div class="stat-title">Total Anggota</div>
-            <div class="stat-value">{{ $totalAnggota ?? 0 }}</div>
+            <div class="stat-value">{{ $totalAnggota }}</div>
         </div>
 
         <div class="stat-card bg-pastel-yellow">
             <div class="stat-title">Sedang Dipinjam</div>
-            <div class="stat-value">{{ $totalSedangDipinjam ?? 0 }}</div>
+            <div class="stat-value">{{ $totalSedangDipinjam }}</div>
         </div>
 
         <div class="stat-card bg-pastel-red">
             <div class="stat-title">Terlambat</div>
-            <div class="stat-value">{{ $totalTerlambat ?? 0 }}</div>
+            <div class="stat-value">{{ $totalTerlambat }}</div>
         </div>
     </div>
 
-    <!-- Layout 2 Tabel Berdampingan -->
     <div class="dashboard-tables-grid">
-        <!-- Kolom Kiri: Stok Menipis -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-dark);">
-                Stok Menipis (kurang dari 3)
-            </h3>
+        <div class="card">
+            <h3 class="section-title">Stok Menipis (kurang dari 3)</h3>
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Judul</th>
-                            <th style="width: 100px; text-align: center;">Stok</th>
+                            <th class="col-center">Stok</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($bukuStokMenipis ?? [] as $buku)
+                        @forelse($bukuStokMenipis as $buku)
                             <tr>
-                                <td>{{ $buku->judul ?? $buku->title ?? '-' }}</td>
-                                <td style="text-align: center;">
-                                    <span class="badge-stok">{{ $buku->stok ?? $buku->stock ?? 0 }}</span>
-                                </td>
+                                <td>{{ $buku->title }}</td>
+                                <td class="col-center"><span class="badge badge-stok">{{ $buku->stock }}</span></td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="2" style="text-align: center; color: var(--text-muted); padding: 1.5rem 0;">
-                                    Tidak ada stok buku yang menipis.
-                                </td>
-                            </tr>
+                            <tr><td colspan="2" class="table-empty">Semua stok buku masih mencukupi.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Kolom Kanan: Peminjaman Terbaru (Dikosongkan) -->
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-dark);">
-                Peminjaman Terbaru
-            </h3>
+        <div class="card">
+            <h3 class="section-title">Peminjaman Terbaru</h3>
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -89,11 +73,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
-                                Belum ada transaksi peminjaman terbaru.
-                            </td>
-                        </tr>
+                        @forelse($peminjamanTerbaru as $b)
+                            <tr>
+                                <td>{{ $b->member->nama ?? '-' }}</td>
+                                <td>{{ $b->details->map(fn ($d) => $d->book->title ?? '-')->implode(', ') }}</td>
+                                <td>{{ $b->batas_pinjam->format('d-m-Y') }}</td>
+                                <td>
+                                    @if($b->status === 'returned')
+                                        <span class="badge badge-blue">Dikembalikan</span>
+                                    @elseif($b->isTerlambat())
+                                        <span class="badge badge-red">Terlambat</span>
+                                    @else
+                                        <span class="badge badge-yellow">Dipinjam</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="table-empty">Belum ada transaksi peminjaman.</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

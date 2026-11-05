@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
+@section('title', 'Manajemen User - Perpustakaan')
+
 @section('content')
     <div class="card">
         <div class="card-header-custom">
-            <h2 class="page-title" style="margin: 0;">Manajemen User</h2>
+            <h2 class="page-title">Manajemen User</h2>
             <a href="{{ route('users.create') }}" class="btn btn-tambah">+ Tambah User</a>
         </div>
 
@@ -11,7 +13,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th class="col-no">No</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -19,16 +21,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($users as $index => $u)
+                    @forelse($users as $user)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $u->name }}</td>
-                            <td>{{ $u->email }}</td>
-                            <td><span class="badge-stok" style="background-color: var(--pastel-purple);">{{ ucfirst($u->role) }}</span></td>
-                            <td>
+                            <td class="col-no">{{ $loop->iteration }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td><span class="badge badge-purple">{{ ucfirst($user->role) }}</span></td>
+                            <td class="col-actions">
                                 <div class="btn-group">
-                                    <a href="{{ route('users.edit', $u->id) }}" class="btn btn-edit btn-sm">Edit</a>
-                                    <form action="{{ route('users.destroy', $u->id) }}" method="POST" style="display:inline;">
+                                    <a href="{{ route('users.edit', $user) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    <form action="{{ route('users.destroy', $user) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus user ini?')">Hapus</button>
@@ -37,7 +39,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="5" style="text-align: center;">Belum ada user.</td></tr>
+                        <tr><td colspan="5" class="table-empty">Belum ada user.</td></tr>
                     @endforelse
                 </tbody>
             </table>
