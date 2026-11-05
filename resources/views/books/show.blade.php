@@ -1,18 +1,32 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
-        <h2 class="page-title">Detail Buku</h2>
-        <div style="margin-top: 1rem; line-height: 2;">
-            <p><strong>Judul:</strong> {{ $book->judul ?? $book->title }}</p>
-            <p><strong>Penulis:</strong> {{ $book->penulis ?? $book->author }}</p>
-            <p><strong>Kategori:</strong> {{ $book->category->nama ?? $book->category->name ?? '-' }}</p>
-            <p><strong>Tahun:</strong> {{ $book->tahun ?? $book->year }}</p>
-            <p><strong>Stok Tersisa:</strong> <span class="badge-stok">{{ $book->stok ?? $book->stock }}</span></p>
-        </div>
+@section('title', 'Detail Buku - Perpustakaan')
 
-        <div class="btn-group" style="margin-top: 1.5rem;">
-            <a href="{{ route('books.edit', $book->id) }}" class="btn btn-edit">Edit</a>
+@section('content')
+    <div class="card detail-card">
+        <h2 class="page-title">Detail Buku</h2>
+
+        <dl class="detail-list">
+            <dt>Judul</dt>
+            <dd>{{ $book->title }}</dd>
+
+            <dt>Penulis</dt>
+            <dd>{{ $book->author }}</dd>
+
+            <dt>Kategori</dt>
+            <dd>{{ $book->category->name ?? '-' }}</dd>
+
+            <dt>Tahun Terbit</dt>
+            <dd>{{ $book->year }}</dd>
+
+            <dt>Stok Tersisa</dt>
+            <dd><span class="badge badge-stok">{{ $book->stock }}</span></dd>
+        </dl>
+
+        <div class="form-actions">
+            @can('update', $book)
+                <a href="{{ route('books.edit', $book) }}" class="btn btn-edit">Edit</a>
+            @endcan
             <a href="{{ route('books.index') }}" class="btn btn-batal">Kembali</a>
         </div>
     </div>

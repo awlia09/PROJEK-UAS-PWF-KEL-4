@@ -1,23 +1,29 @@
 @extends('layouts.app')
 
+@section('title', 'Tambah Kategori - Perpustakaan')
+
 @section('content')
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
-        <h2 class="page-title" style="margin-bottom: 1.5rem;">Tambah Kategori</h2>
+    <div class="card form-card">
+        <h2 class="page-title">Tambah Kategori</h2>
+
+        @include('partials.errors')
 
         <form action="{{ route('categories.store') }}" method="POST">
             @csrf
 
             <div class="form-group">
-                <label class="form-label">Nama Kategori</label>
-                <input type="text" name="nama" class="form-control" required placeholder="Contoh: Novel, Komik">
+                <label class="form-label" for="name">Nama Kategori</label>
+                <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror"
+                       value="{{ old('name') }}" required placeholder="Contoh: Novel, Komik">
             </div>
 
             <div class="form-group">
-                <label class="form-label">Deskripsi</label>
-                <textarea name="deskripsi" class="form-control" rows="3" placeholder="Deskripsi kategori"></textarea>
+                <label class="form-label" for="description">Deskripsi</label>
+                <textarea id="description" name="description" class="form-control" rows="3"
+                          placeholder="Deskripsi kategori (opsional)">{{ old('description') }}</textarea>
             </div>
 
-            <div class="btn-group" style="margin-top: 1.5rem;">
+            <div class="form-actions">
                 <button type="submit" class="btn btn-simpan">Simpan Kategori</button>
                 <a href="{{ route('categories.index') }}" class="btn btn-batal">Batal</a>
             </div>
