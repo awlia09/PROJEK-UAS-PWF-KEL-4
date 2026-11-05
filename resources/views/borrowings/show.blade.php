@@ -1,48 +1,55 @@
 @extends('layouts.app')
 
+@section('title', 'Detail Peminjaman - Perpustakaan')
+
 @section('content')
-    <div class="card" style="max-width: 650px; margin: 0 auto;">
+    <div class="card detail-card">
         <div class="card-header-custom">
-            <h2 class="page-title" style="margin: 0;">Detail Peminjaman</h2>
-            <span class="badge-stok" style="background-color: var(--pastel-purple);">
-                {{ ucfirst($borrowing->status) }}
-            </span>
+            <h2 class="page-title">Detail Peminjaman</h2>
+
+            @if($borrowing->status === 'returned')
+                <span class="badge badge-blue">Dikembalikan</span>
+            @elseif($borrowing->isTerlambat())
+                <span class="badge badge-red">Terlambat {{ $borrowing->hariTerlambat() }} hari</span>
+            @else
+                <span class="badge badge-yellow">Dipinjam</span>
+            @endif
         </div>
 
-        <div style="line-height: 2.2; font-size: 0.95rem; margin-top: 0.5rem;">
-            <div style="display: flex; border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
-                <strong style="width: 180px;">Nama Anggota:</strong>
-                <span>{{ $borrowing->member->nama ?? $borrowing->member->name ?? '-' }}</span>
-            </div>
+        <dl class="detail-list">
+            <dt>Nama Anggota</dt>
+            <dd>{{ $borrowing->member->nama ?? '-' }}</dd>
 
-            <div style="display: flex; border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
-                <strong style="width: 180px;">Petugas / User:</strong>
-                <span>{{ $borrowing->user->name ?? '-' }}</span>
-            </div>
+            <dt>Petugas</dt>
+            <dd>{{ $borrowing->user->name ?? '-' }}</dd>
 
-            <div style="display: flex; border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
-                <strong style="width: 180px;">Buku yang Dipinjam:</strong>
-                <span>{{ $borrowing->book->judul ?? $borrowing->book->title ?? '-' }}</span>
-            </div>
+            <dt>Buku yang Dipinjam</dt>
+            <dd>
+                <ul>
+                    @foreach($borrowing->details as $detail)
+                        <li>{{ $detail->book->title ?? '-' }} ({{ $detail->kuantitas }})</li>
+                    @endforeach
+                </ul>
+            </dd>
 
-            <div style="display: flex; border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
-                <strong style="width: 180px;">Tanggal Peminjaman:</strong>
-                <span>{{ $borrowing->borrowed_at }}</span>
-            </div>
+            <dt>Tanggal Peminjaman</dt>
+            <dd>{{ $borrowing->tanggal_peminjaman->format('d-m-Y') }}</dd>
 
-            <div style="display: flex; border-bottom: 1px solid var(--border-color); padding: 0.5rem 0;">
-                <strong style="width: 180px;">Jatuh Tempo:</strong>
-                <span>{{ $borrowing->due_date ?? '-' }}</span>
-            </div>
+            <dt>Jatuh Tempo</dt>
+            <dd>{{ $borrowing->batas_pinjam->format('d-m-Y') }}</dd>
 
-            <div style="display: flex; padding: 0.5rem 0;">
-                <strong style="width: 180px;">Tanggal Pengembalian:</strong>
-                <span>{{ $borrowing->returned_at ?? 'Belum Dikembalikan' }}</span>
-            </div>
-        </div>
+            <dt>Tanggal Pengembalian</dt>
+            <dd>{{ $borrowing->tanggal_pengembalian ? $borrowing->tanggal_pengembalian->format('d-m-Y') : 'Belum dikembalikan' }}</dd>
+        </dl>
 
-        <div class="btn-group" style="margin-top: 1.8rem;">
-            <a href="{{ route('borrowings.edit', $borrowing->id) }}" class="btn btn-edit">Edit Peminjaman</a>
+        <div class="form-actions">
+            @if($borrowing->status === 'borrowed')
+                <form action="{{ route('borrowings.return', $borrowing) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-simpan" onclick="return confirm('Tandai buku sudah dikembalikan?')">Kembalikan Buku</button>
+                </form>
+            @endif
             <a href="{{ route('borrowings.index') }}" class="btn btn-batal">Kembali</a>
         </div>
     </div>

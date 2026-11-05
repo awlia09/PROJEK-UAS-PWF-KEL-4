@@ -1,40 +1,52 @@
 @extends('layouts.app')
 
+@section('title', 'Peminjaman Baru - Perpustakaan')
+
 @section('content')
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
-        <h2 class="page-title" style="margin-bottom: 1.5rem;">Peminjaman Baru</h2>
+    <div class="card form-card">
+        <h2 class="page-title">Peminjaman Baru</h2>
+
+        @include('partials.errors')
 
         <form action="{{ route('borrowings.store') }}" method="POST">
             @csrf
 
             <div class="form-group">
-                <label class="form-label">Anggota</label>
-                <select name="member_id" class="form-select" required>
+                <label class="form-label" for="member_id">Anggota</label>
+                <select id="member_id" name="member_id" class="form-select @error('member_id') is-invalid @enderror" required>
                     <option value="">-- Pilih Anggota --</option>
-                    @foreach($members as $m)
-                        <option value="{{ $m->id }}">{{ $m->nama ?? $m->name }}</option>
+                    @foreach($members as $member)
+                        <option value="{{ $member->id }}" {{ old('member_id') == $member->id ? 'selected' : '' }}>
+                            {{ $member->kode_member }} - {{ $member->nama }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Tanggal Peminjaman</label>
-                <input type="date" name="borrowed_at" class="form-control" value="{{ date('Y-m-d') }}" required>
+                <label class="form-label" for="tanggal_peminjaman">Tanggal Peminjaman</label>
+                <input type="date" id="tanggal_peminjaman" name="tanggal_peminjaman"
+                       class="form-control @error('tanggal_peminjaman') is-invalid @enderror"
+                       value="{{ old('tanggal_peminjaman', date('Y-m-d')) }}" required>
+                <div class="form-hint">Jatuh tempo otomatis 1 minggu setelah tanggal peminjaman.</div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Pilih Buku</label>
                 <div class="checkbox-list">
-                    @foreach($books as $book)
+                    @forelse($books as $book)
                         <label class="checkbox-item">
-                            <input type="checkbox" name="book_ids[]" value="{{ $book->id }}">
-                            <span>{{ $book->judul ?? $book->title }} <strong>(stok: {{ $book->stok ?? $book->stock }})</strong></span>
+                            <input type="checkbox" name="books[]" value="{{ $book->id }}"
+                                {{ in_array($book->id, old('books', [])) ? 'checked' : '' }}>
+                            <span>{{ $book->title }} <strong>(stok: {{ $book->stock }})</strong></span>
                         </label>
-                    @endforeach
+                    @empty
+                        <span class="text-muted">Tidak ada buku dengan stok tersedia.</span>
+                    @endforelse
                 </div>
             </div>
 
-            <div class="btn-group" style="margin-top: 1.5rem;">
+            <div class="form-actions">
                 <button type="submit" class="btn btn-simpan">Simpan Peminjaman</button>
                 <a href="{{ route('borrowings.index') }}" class="btn btn-batal">Batal</a>
             </div>

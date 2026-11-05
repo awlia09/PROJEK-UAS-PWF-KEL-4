@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
+@section('title', 'Data Peminjaman - Perpustakaan')
+
 @section('content')
     <div class="card">
         <div class="card-header-custom">
-            <h2 class="page-title" style="margin: 0;">Data Peminjaman</h2>
+            <h2 class="page-title">Data Peminjaman</h2>
             <a href="{{ route('borrowings.create') }}" class="btn btn-tambah">+ Peminjaman Baru</a>
         </div>
 
@@ -22,28 +24,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($borrowings as $b)
+                    @forelse($borrowings as $borrowing)
                         <tr>
-                            <td>{{ $b->member->nama ?? '-' }}</td>
-                            <td>{{ $b->user->name ?? '-' }}</td>
-                            <td>{{ $b->borrowed_at }}</td>
-                            <td>{{ $b->due_date }}</td>
-                            <td>{{ $b->returned_at ?? '-' }}</td>
-                            <td>{{ $b->book->judul ?? '-' }}</td>
-                            <td><span class="badge-status">{{ ucfirst($b->status) }}</span></td>
+                            <td>{{ $borrowing->member->nama ?? '-' }}</td>
+                            <td>{{ $borrowing->user->name ?? '-' }}</td>
+                            <td>{{ $borrowing->tanggal_peminjaman->format('d-m-Y') }}</td>
+                            <td>{{ $borrowing->batas_pinjam->format('d-m-Y') }}</td>
+                            <td>{{ $borrowing->tanggal_pengembalian ? $borrowing->tanggal_pengembalian->format('d-m-Y') : '-' }}</td>
+                            <td>{{ $borrowing->details->map(fn ($d) => $d->book->title ?? '-')->implode(', ') }}</td>
                             <td>
+                                @if($borrowing->status === 'returned')
+                                    <span class="badge badge-blue">Dikembalikan</span>
+                                @elseif($borrowing->isTerlambat())
+                                    <span class="badge badge-red">Terlambat {{ $borrowing->hariTerlambat() }} hari</span>
+                                @else
+                                    <span class="badge badge-yellow">Dipinjam</span>
+                                @endif
+                            </td>
+                            <td class="col-actions">
                                 <div class="btn-group">
-                                    <a href="{{ route('borrowings.edit', $b->id) }}" class="btn btn-edit btn-sm">Edit</a>
-                                    <form action="{{ route('borrowings.destroy', $b->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus data peminjaman?')">Hapus</button>
-                                    </form>
+                                    <a href="{{ route('borrowings.show', $borrowing) }}" class="btn btn-info btn-sm">Detail</a>
+
+                                    @if($borrowing->status === 'borrowed')
+                                        <form action="{{ route('borrowings.return', $borrowing) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-simpan btn-sm" onclick="return confirm('Tandai buku sudah dikembalikan?')">Kembalikan</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" style="text-align: center;">Belum ada data peminjaman.</td></tr>
+                        <tr><td colspan="8" class="table-empty">Belum ada data peminjaman.</td></tr>
                     @endforelse
                 </tbody>
             </table>
