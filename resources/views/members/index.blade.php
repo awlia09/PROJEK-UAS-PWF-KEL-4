@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
+@section('title', 'Daftar Anggota - Perpustakaan')
+
 @section('content')
     <div class="card">
         <div class="card-header-custom">
-            <h2 class="page-title" style="margin: 0;">Daftar Anggota</h2>
+            <h2 class="page-title">Daftar Anggota</h2>
             <a href="{{ route('members.create') }}" class="btn btn-tambah">+ Tambah Anggota</a>
         </div>
 
@@ -11,33 +13,31 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Kode Anggota</th>
+                        <th class="col-no">No</th>
+                        <th>Kode Member</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>No HP</th>
+                        <th>Jenis Kelamin</th>
+                        <th>Tanggal Daftar</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($members as $index => $m)
+                    @forelse($members as $member)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>
-                                <strong>
-                                    {{ $m->kode_member ?? $m->kode_anggota ?? '-' }}
-                                </strong>
-                            </td>
-                            <td>{{ $m->nama }}</td>
-                            <td>{{ $m->email }}</td>
-                            <td>
-                                {{ $m->nomor_hp ?? $m->no_hp ?? '-' }}
-                            </td>
-                            <td>
+                            <td class="col-no">{{ $loop->iteration }}</td>
+                            <td><strong>{{ $member->kode_member }}</strong></td>
+                            <td>{{ $member->nama }}</td>
+                            <td>{{ $member->email }}</td>
+                            <td>{{ $member->nomor_hp ?: '-' }}</td>
+                            <td>{{ $member->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                            <td>{{ $member->tanggal_daftar->format('d-m-Y') }}</td>
+                            <td class="col-actions">
                                 <div class="btn-group">
-                                    <a href="{{ route('members.show', $m->id) }}" class="btn btn-info btn-sm">Detail</a>
-                                    <a href="{{ route('members.edit', $m->id) }}" class="btn btn-edit btn-sm">Edit</a>
-                                    <form action="{{ route('members.destroy', $m->id) }}" method="POST" style="display:inline;">
+                                    <a href="{{ route('members.show', $member) }}" class="btn btn-info btn-sm">Detail</a>
+                                    <a href="{{ route('members.edit', $member) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    <form action="{{ route('members.destroy', $member) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus anggota ini?')">Hapus</button>
@@ -46,7 +46,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" style="text-align: center;">Belum ada data anggota.</td></tr>
+                        <tr><td colspan="8" class="table-empty">Belum ada data anggota.</td></tr>
                     @endforelse
                 </tbody>
             </table>
