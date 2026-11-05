@@ -1,23 +1,24 @@
 @extends('layouts.app')
 
+@section('title', 'Daftar Buku - Perpustakaan')
+
 @section('content')
     <div class="card">
         <div class="card-header-custom">
-            <h2 class="page-title" style="margin: 0;">Daftar Buku</h2>
-            
-            {{-- Tombol Tambah Buku hanya tampil jika diizinkan Policy 'create' --}}
+            <h2 class="page-title">Daftar Buku</h2>
+
             @can('create', App\Models\Book::class)
                 <a href="{{ route('books.create') }}" class="btn btn-tambah">+ Tambah Buku</a>
             @endcan
         </div>
 
-        <form method="GET" action="{{ route('books.index') }}" style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.5rem;">
-            <label class="form-label" style="margin: 0;">Kategori:</label>
-            <select name="category_id" class="form-select" style="width: auto;">
+        <form method="GET" action="{{ route('books.index') }}" class="filter-form">
+            <label class="form-label" for="category_id">Kategori:</label>
+            <select name="category_id" id="category_id" class="form-select form-select-auto">
                 <option value="">Semua Kategori</option>
-                @foreach($categories as $cat)
-                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
-                        {{ $cat->nama ?? $cat->name }}
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
                     </option>
                 @endforeach
             </select>
@@ -29,39 +30,36 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th class="col-no">No</th>
                         <th>Judul</th>
                         <th>Penulis</th>
                         <th>Kategori</th>
                         <th>Tahun</th>
-                        <th>Stok</th>
+                        <th class="col-center">Stok</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($books as $index => $b)
+                    @forelse($books as $book)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $b->judul ?? $b->title }}</td>
-                            <td>{{ $b->penulis ?? $b->author }}</td>
-                            <td>{{ $b->category->nama ?? $b->category->name ?? '-' }}</td>
-                            <td>{{ $b->tahun ?? $b->year }}</td>
-                            <td>{{ $b->stok ?? $b->stock }}</td>
-                            <td>
+                            <td class="col-no">{{ $loop->iteration }}</td>
+                            <td>{{ $book->title }}</td>
+                            <td>{{ $book->author }}</td>
+                            <td>{{ $book->category->name ?? '-' }}</td>
+                            <td>{{ $book->year }}</td>
+                            <td class="col-center"><span class="badge badge-stok">{{ $book->stock }}</span></td>
+                            <td class="col-actions">
                                 <div class="btn-group">
-                                    {{-- Tombol Detail dapat dilihat oleh user yang memiliki izin 'view' --}}
-                                    @can('view', $b)
-                                        <a href="{{ route('books.show', $b->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                    @can('view', $book)
+                                        <a href="{{ route('books.show', $book) }}" class="btn btn-info btn-sm">Detail</a>
                                     @endcan
 
-                                    {{-- Tombol Edit dibungkus @can('update', $b) --}}
-                                    @can('update', $b)
-                                        <a href="{{ route('books.edit', $b->id) }}" class="btn btn-edit btn-sm">Edit</a>
+                                    @can('update', $book)
+                                        <a href="{{ route('books.edit', $book) }}" class="btn btn-edit btn-sm">Edit</a>
                                     @endcan
 
-                                    {{-- Tombol Hapus dibungkus @can('delete', $b) --}}
-                                    @can('delete', $b)
-                                        <form action="{{ route('books.destroy', $b->id) }}" method="POST" style="display:inline;">
+                                    @can('delete', $book)
+                                        <form action="{{ route('books.destroy', $book) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-hapus btn-sm" onclick="return confirm('Hapus buku ini?')">Hapus</button>
@@ -71,7 +69,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" style="text-align: center;">Belum ada data buku.</td></tr>
+                        <tr><td colspan="7" class="table-empty">Tidak ada buku pada kategori ini.</td></tr>
                     @endforelse
                 </tbody>
             </table>
