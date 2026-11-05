@@ -24,7 +24,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
+            'password' => ['nullable', 'min:8'],
             'role' => ['required', Rule::in(['admin', 'petugas'])],
         ]);
 

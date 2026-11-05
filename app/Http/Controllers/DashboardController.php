@@ -3,30 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\Member;
 use App\Models\Borrowing;
-use Illuminate\Http\Request;
+use App\Models\Member;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Hitung total jenis/judul buku
-        $totalJudulBuku = Book::count();
+        // Kartu statistik wajib
+        $totalJudulBuku      = Book::count();
+        $totalStokBuku       = (int) Book::sum('stock');
+        $totalAnggota        = Member::count();
+        $totalSedangDipinjam = Borrowing::where('status', 'borrowed')->count();
 
-        // 2. Hitung total akumulasi seluruh stok buku (cek kolom 'stok' / 'stock')
-        $totalStokBuku = Book::sum('stok') ?: Book::sum('stock');
+        // Dashboard tambahan
+        $totalTerlambat = Borrowing::where('status', 'borrowed')
+            ->whereDate('batas_pinjam', '<', today())
+            ->count();
 
-        // 3. Hitung total anggota
-        $totalAnggota = Member::count();
+        $bukuStokMenipis = Book::where('stock', '<', 3)
+            ->orderBy('stock')
+            ->orderBy('title')
+            ->take(5)
+            ->get();
 
-        // 4. Hitung peminjaman yang sedang aktif / terlambat
-        $totalSedangDipinjam = Borrowing::whereIn('status', ['dipinjam', 'borrowed'])->count();
-        $totalTerlambat = Borrowing::where('status', 'terlambat')->count();
-
-        // 5. Ambil daftar buku yang stoknya kurang dari atau sama dengan 3
-        $bukuStokMenipis = Book::where('stok', '<=', 3)
-            ->orWhere('stock', '<=', 3)
+        $peminjamanTerbaru = Borrowing::with(['member', 'details.book'])
+            ->latest()
+            ->take(5)
             ->get();
 
         return view('dashboard', compact(
@@ -35,7 +38,8 @@ class DashboardController extends Controller
             'totalAnggota',
             'totalSedangDipinjam',
             'totalTerlambat',
-            'bukuStokMenipis'
+            'bukuStokMenipis',
+            'peminjamanTerbaru'
         ));
     }
 }
